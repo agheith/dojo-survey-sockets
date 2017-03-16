@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Survey</title>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        <script type ="text/javascript" src="/socket.io/socket.io.js"></script>
+        <script type="text/javascript">
+        $(document).ready(function() {
+            var socket = io.connect();
+            $('#survey_form').submit(function(){
+                socket.emit('posting_form', {
+                    name: $('#name').val(),
+                    favorite_language: $('#favorite_language').val(),
+                    location: $('#location').val()
+                });
+                return false;
+            });
+            socket.on("updated_message", function(data){
+                $("#message").html("You've emmitted the following information to the server: " + JSON.stringify(data.response));
+            });
+            socket.on("random_number", function(data){
+                $("#number").html("Your lucky number emmitted by the server is : " + JSON .stringify(data.response));
+            })
+        });
+        </script>
+    </head>
+    <body>
+        <div id="message"></div>
+        <div id="number"></div><br><br>
+        <form action="" id="survey_form">
+            Name: <input type="text" name="name" id="name">
+            Faveorite Language:
+            <select  name="favorite_language" id="favorite_language">
+                <option value="JS">JS</option>
+                <option value="Python">Python</option>
+                <option value="Ruby">Ruby</option>
+            </select>
+            Location:
+            <select  name="location" id="location">
+                <option value="San Jose">San Jose</option>
+                <option value="Hawaii">Hawaii</option>
+                <option value="Seattle">Seattle</option>
+            </select>
+            <input type="submit" value="Submit">
+        </form>
+    </body>
+</html>
